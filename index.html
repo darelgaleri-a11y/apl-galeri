@@ -919,10 +919,31 @@
     }
 
     async function apiJson(url) {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return await res.json();
+  try {
+    console.log('FETCH URL:', url);
+
+    const res = await fetch(url, {
+      method: 'GET',
+      cache: 'no-store'
+    });
+
+    console.log('STATUS:', res.status);
+
+    const text = await res.text();
+
+    console.log('RESPONSE TEXT:', text);
+
+    try {
+      return JSON.parse(text);
+    } catch (err) {
+      throw new Error('Response bukan JSON: ' + text.substring(0, 200));
     }
+
+  } catch (e) {
+    console.error('Fetch gagal:', e);
+    throw e;
+  }
+}
 
     async function loadData() {
       setOverlay(true);
